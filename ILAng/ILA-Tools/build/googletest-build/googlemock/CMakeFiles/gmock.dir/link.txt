@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -std=c++11 -fPIC -Wall -g3 -g  -shared -Wl,-soname,libgmockd.so -o ../../lib/libgmockd.so CMakeFiles/gmock.dir/src/gmock-all.cc.o -Wl,-rpath,/home/tacas19/ILA-Tools/build/lib: ../../lib/libgtestd.so -pthread 

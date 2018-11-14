@@ -128,6 +128,8 @@ reported in the paper
             This (dummy) execution unit contains 3 stages and there are also 
             forwarding network implemented as shown below. To aid forwarding, 
             there is also a tiny scoreboard implemented.
+       
+       
           
 
 

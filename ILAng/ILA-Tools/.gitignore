@@ -1,5 +1,5 @@
 # Prerequisites
-*.d
+#*.d
 
 # Compiled Object files
 *.slo
@@ -8,8 +8,8 @@
 *.obj
 
 # Precompiled Headers
-*.gch
-*.pch
+#*.gch
+#*.pch
 
 # Compiled Dynamic libraries
 *.so
@@ -33,7 +33,7 @@
 *.x
 
 # Build directory
-build/
+#build/
 
 # Doxygen output
 #html/

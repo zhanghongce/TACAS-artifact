@@ -1,0 +1,1 @@
+/usr/bin/c++ -fPIC  -std=c++11 -fPIC -Wall -g3 -g  -shared -Wl,-soname,libjson_inout.so -o ../../lib/libjson_inout.so CMakeFiles/json_inout.dir/json_parse.cc.o 
