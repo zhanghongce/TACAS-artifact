@@ -1,20 +1,18 @@
  
-Handwritten ILA model using ILA APIs and ILA vs FSM Verification
+Handwritten ILA model using ILA APIs & ILA vs. FSM Equivalence Checking
 =====================================================================
 
 
 Overview
 --------------
 
-The example, despite it is small, is more than just a module 
-that performs arithmetic and logic operations. It is intended
-to mimic the execution unit of an in-order pipeline of a processor
-(although we simply call it ALU). The design contains a register 
-file with 4 registers.
+It is intended to mimic the execution unit of an in-order pipeline 
+of a processor (although we simply call it ALU). The design contains 
+a register file with 4 registers.
 
 The input of the module contains an 8-bit instruction field. This
-is to mimic the output from the dispatch unit of the processor. 
-The fields of the 8-bit inputs is define as following:
+is to mimic the output from the dispatch unit of a processor. 
+The fields of the 8-bit inputs are define as following:
 
 <pre>
 |------------------------------------------------------------|
@@ -33,7 +31,7 @@ a forwarding network implemented as shown below.
 </pre>
 
 To aid forwarding, there is also a tiny scoreboard implemented
-to track future updates of the instructions in the pipeline. 
+to track register updates of the instructions in the pipeline. 
 Based on the record in the scoreboard, the forwarding network 
 decides when and where to forward a value.
 
@@ -59,22 +57,24 @@ File Content
 Behaviorial Equivalence
 -------------------------
 The ILA model in `ila/main.cc` does not contain the information of
-the pipeline. This is intended as it is a _specification_, while
-an implementation is free to choose its way of performing the 
-operations, whether pipelined or not. So the equivalence between
-the ILA model and the Verilog model is not combinational or
-sequential equivalence. It is _behaviorial_ equivalence.
+the pipeline, scoreboard or forwarding logic. This is intended 
+as it is a _specification_, while an implementation is free to choose 
+its way of performing the operations, whether pipelined or not. So 
+the equivalence between the ILA model and the Verilog model is not 
+combinational or sequential equivalence. It is _behaviorial_ equivalence.
 
+For more information about the equivalence checking, you can refer to our
+previous [paper](https://arxiv.org/abs/1801.01114) on arXiv.
 
 Refinement Relations
 --------------------
 The refinement relations for checking behaviorial equivalence between
 the ILA model and the Verilog implementation is specified under directory
-`ref-rel`. The refinement relations specifies how to apply an instruction,
+`ref-rel`. The refinement relations specify how to apply an instruction,
 the commit point of instructions and the variable mapping between ILA state
 variables and RTL variables.
 
-In the design
+In the design, there is the need to (a)
 
 
 Verification Toolchain
@@ -86,9 +86,6 @@ SMT-LIB2 output to work with Z3. A python script provided along with Yosys
 from the a generated SMT-LIB2 file. As its name suggested, it is capable of
 performaing Bounded Model Checking (BMC).
 
-
-Verification Procedure
----------------------- 
 
 
 
