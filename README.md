@@ -152,7 +152,7 @@ reported in the paper
       
       To reproduce the result of equivalence checking, run
       ```
-      time ./vlg-verif.py
+      time python vlg-verif.py
       ```
       
       The equivalence checking will first parse-in the refinement relations,
