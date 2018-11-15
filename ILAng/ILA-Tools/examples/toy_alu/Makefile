@@ -2,7 +2,7 @@
 CXX_FLAGS=-std=c++11 -Wall -fPIC
 LD_FLAGS=-lila++
 
-SRC_DIR=src
+SRC_DIR=ila
 OBJ_DIR=obj
 SRC_FILES := $(wildcard $(SRC_DIR)/*.cc)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.cc,$(OBJ_DIR)/%.o,$(SRC_FILES))
