@@ -52,10 +52,10 @@ reported in the paper
       checking and talks about the basics of how to write refinement relations.
        
       NOTE:
-         * For the template for ILA-C (block-level), you can look into `CTemplate.py`
-         * For the template for ILA-C (round-level), you can refer to `CRound.py` 
+         * For the template for AES_C (block-level), you can look into `CTemplate.py`
+         * For the template for AES_C (round-level), you can refer to `CRound.py` 
          * The refinement relations is rewritten in `CSimRfRelation.py`
-           It is similar for ILA-V, except the file names start with a letter `V`. 
+           It is similar for AES_V, except the file names start with a letter `V`. 
          * If you have further questions about how to write a template, 
            you can refer to the following documentation: 
            `$ILAROOT/docs/ILA_Tutorial_Template_Synthesis_Verification.pdf` and
@@ -90,7 +90,7 @@ reported in the paper
       code to generate a simulator. After synthesis completes, the ILA-IR will be stored
       in folder `cILA`.
     
-   4. Behavioral equivalence checking. With the ILA-IR for both ILA-V and ILA-C generated, run
+   4. Behavioral equivalence checking. With the ILA-IR for both AES_V and AES_C generated, run
       ```
       time ./IlaEqcheck.py
       ```
@@ -152,7 +152,7 @@ reported in the paper
       
       To reproduce the result of equivalence checking, run
       ```
-      time ./vlg-verif.py
+      time python vlg-verif.py
       ```
       
       The equivalence checking will first parse-in the refinement relations,
