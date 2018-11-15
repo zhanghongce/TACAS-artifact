@@ -163,7 +163,8 @@ reported in the paper
       and (b) verifying the equivalence of instructions assuming the invariants
       given are valid. A more detailed explanantion of what the inductive
       invariants specify can be found in `$ILAROOT/examples/toy_alu/README.md`.
-      If the verification failed, a waveform will be generated.
+      If the verification failed, a waveform named `trace.vcd` showing the failing
+      trace will be generated.
       
       
               
@@ -171,9 +172,16 @@ reported in the paper
 ILA and ILAng Documentation
 ====================================
 
-In this section, we'd like to point you to more ILA documentations if you would like
-to have a further understanding of ILA and ILAng. 
+In this section, we'd like to point you to more ILA documentations (available online) 
+if you would like to have a further understanding of ILA and ILAng. 
 
+   1. User manual for writing a synthesis template: 
+      * https://github.com/Bo-Yuan-Huang/ILA-Tools/blob/master/docs/ILA_User_Manual.pdf 
+      * https://github.com/Bo-Yuan-Huang/ILA-Tools/blob/master/docs/ILA_Tutorial_Template_Synthesis_Verification.pdf 
+   2. The API for manually constructing ILAs:
+      * https://rawgit.com/Bo-Yuan-Huang/ILA-Tools/master/docs/api-html/namespaceila.html 
+   3. The API for verification utilities and documentation for ILAng implementation:
+      * https://rawgit.com/Bo-Yuan-Huang/ILA-Tools/master/docs/impl-html/namespaceila.html 
 
 
 
