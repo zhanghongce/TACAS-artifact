@@ -63,8 +63,8 @@ reported in the paper
             cd Verilog
             make
         
-       This will build a simulator from the verilog design provided in the `Verilog` directory,
-       the simulator is an executable named `AESsim`. 
+       This will build a simulator from the verilog design provided in the `Verilog` 
+       directory, the simulator is an executable named `AESsim`. 
         
        Then start ILA synthesis using the following commands:
         

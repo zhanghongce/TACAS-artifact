@@ -42,10 +42,10 @@ cd ${PACKDIR}
 unzip yosys -d ~
 
 #clang+llvm
-tar xzvf clang+llvm-2.9-bin.tar.gz -C ~
+#tar xzvf clang+llvm-2.9-bin.tar.gz -C ~
 
 #cbmc
-unzip cbmc -d ~
+#unzip cbmc -d ~
 
 #ila tool Need to change something there!
 cd ${PACKDIR}/../
@@ -65,9 +65,13 @@ echo "export ILAROOT=~/ILA-Tools" >> ~/.bashrc
 
 
 echo "${ILAROOT}" > /tmp/ILAinstalled
+
+echo
 echo "---------------------------"
 echo "  Installation Completed.  "
 echo "---------------------------"
 
+# return to its original directory
+cd ${PACKDIR}/../
 
 
