@@ -27,7 +27,7 @@
   "instructions": [
     {
       "instruction": "NOP",
-      "start decode": [], 
+      "start decode": ["dummy_reset == 0"], 
       "ready signal": [],  
       "ready bound": 3,
 
@@ -35,7 +35,7 @@
     },
     {
       "instruction": "ADD",
-      "start decode": [], 
+      "start decode": ["dummy_reset == 0"], 
       "ready signal": [],  
       "ready bound": 3,
 
@@ -43,7 +43,7 @@
     },
     {
       "instruction": "SUB",
-      "start decode": [], 
+      "start decode": ["dummy_reset == 0"], 
       "ready signal": [],  
       "ready bound": 3,
 
@@ -51,7 +51,7 @@
     },
     {
       "instruction": "AND",
-      "start decode": [],
+      "start decode": ["dummy_reset == 0"],
       "ready signal": [],
       "ready bound": 3,
 

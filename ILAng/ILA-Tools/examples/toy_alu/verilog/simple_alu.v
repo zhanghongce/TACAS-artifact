@@ -15,6 +15,7 @@
 `define  OP_NOP 2'b00
 `define  OP_ADD 2'b01
 `define  OP_SUB 2'b10
+`define  OP_AND 2'b11
 
 module pipeline_alu(input clk, input rst, input [7:0] inst, input [1:0] dummy_read_rf, output [7:0] dummy_rf_data , /*port_list_out*/);
 
@@ -71,7 +72,7 @@ assign op = inst[7:6];
 assign rs1= inst[5:4];
 assign rs2= inst[3:2];
 assign rd = inst[1:0];
-assign id_wen = op == `OP_ADD || op == `OP_SUB;
+assign id_wen = op == `OP_ADD || op == `OP_SUB || op == `OP_AND;
 
 assign dummy_rf_data =  dummy_read_rf == 0 ? registers[0] : 
                         dummy_read_rf == 1 ? registers[1] : 
@@ -178,6 +179,7 @@ end
 
 assign ex_alu_result =  id_ex_op == `OP_ADD ? id_ex_rs1_val + id_ex_rs2_val :
                         id_ex_op == `OP_SUB ? id_ex_rs1_val - id_ex_rs2_val :
+                        id_ex_op == `OP_AND ? id_ex_rs1_val & id_ex_rs2_val :
                         8'bxxxxxxxx;
 
 always @(posedge clk) begin
@@ -202,7 +204,7 @@ always @(posedge clk ) begin
         registers[3] <= 8'd0;
     end
     else if (ex_wb_reg_wen) begin
-        case (ex_wb_reg_wen)
+        case (ex_wb_rd)
         2'd0: registers[0] <= ex_wb_val;
         2'd1: registers[1] <= ex_wb_val;
         2'd2: registers[2] <= ex_wb_val;
