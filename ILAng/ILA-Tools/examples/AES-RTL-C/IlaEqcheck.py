@@ -1,23 +1,40 @@
 #!/usr/bin/python
-
+import os
+import argparse
 import ila
 import EqCheckLib
 
-def loadILAs():
+def checkPath(pathname):
+    if not os.path.exists(pathname):
+        print pathname,'does not exists!'
+        return False
+    if not os.path.isdir(pathname):
+        print pathname,'is not a directory'
+        return False
+    if not os.path.exists(os.path.join(pathname, 'all')):
+        print pathname,'does not contain an ILA-IR'
+        return False
+    if not os.path.exists(os.path.join(pathname, 'allu')):
+        print pathname,'does not a complete ILA-IR'
+        return False
+    return True
+    
+
+def loadILAs(vname,cname):
     vILA = ila.Abstraction('vaes')
-    vILA.importAll('vILA/all')
+    vILA.importAll(os.path.join(vname, 'all') )
     vuILA = vILA.get_microabstraction('aes_compute')
-    vuILA.importAll('vILA/allu')
+    vuILA.importAll(os.path.join(vname, 'allu'))
     
     cILA = ila.Abstraction('caes')
-    cILA.importAll('cILA/all')
+    cILA.importAll(os.path.join(cname, 'all') )
     cuILA = cILA.get_microabstraction('aes_compute')
-    cuILA.importAll('cILA/allu')
+    cuILA.importAll(os.path.join(cname, 'allu') )
 
     return (vILA,vuILA,cILA,cuILA)
 
-def Checking():
-    (vILA,vuILA,cILA,cuILA) = loadILAs()
+def Checking(vname,cname):
+    (vILA,vuILA,cILA,cuILA) = loadILAs(vname, cname)
     eq = EqCheckLib.EQCheck(vILA,vuILA,cILA,cuILA)
 
     cmd_Vlg           = vuILA.getinp('cmd')
@@ -86,5 +103,16 @@ def Checking():
 
 
 if __name__ == '__main__':
-    #ila.enablelog("Unroller")
-    Checking()
+    parser = argparse.ArgumentParser(description='ILA Equivalence Checking Helper')
+    parser.add_argument('-v', type = str, help = 'ILA AST from Verilog', default="vILA")
+    parser.add_argument('-c', type = str, help = 'ILA AST from C', default='cILA')
+    args = parser.parse_args()
+    if not args.v or not checkPath(args.v):
+        print 'Incorrect path', args.v,' for ILA AST from Verilog'
+        exit(1)
+    
+    if not args.c or not checkPath(args.c):
+        print 'Incorrect path', args.c,' for ILA AST from C'
+        exit(1)
+        
+    Checking(args.v, args.c)

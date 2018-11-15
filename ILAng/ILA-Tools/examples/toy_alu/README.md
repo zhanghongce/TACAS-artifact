@@ -74,7 +74,17 @@ the ILA model and the Verilog implementation is specified under directory
 the commit point of instructions and the variable mapping between ILA state
 variables and RTL variables.
 
-In the design, there is the need to (a)
+In this design, there is a need to provide a set of invariants that assist
+instruction equivalence checking. It specify the consistency between the
+record of the scoreboard and the state of the pipeline registers. In a correct
+design, this should be true as the scoreboard is to track the state of the
+pipeline. For verifying equivalence of instructions, the initial state should
+also preserve this property. These invarients are stated in `ref-rel-verilog.json`.
+
+Refinement relations also points out the state variable mappings. In the case of 
+this design, a register (r0-r3) in ILA could correspond to the four physical registers 
+(registers0..3) or the values from the bypassing network. And the variable mapping
+in `ref-rel-var-map.json` states how they are matched.
 
 
 Verification Toolchain

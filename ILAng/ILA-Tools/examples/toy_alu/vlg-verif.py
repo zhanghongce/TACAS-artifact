@@ -1,6 +1,6 @@
 #!/usr/bin/python
-
 import os
+import argparse
 import subprocess
 import json
 
@@ -154,24 +154,29 @@ def RunVlgChecker(foutname, arbInit = False):
     with open('YosysScript.ys','w') as fout:
         fout.write(YosysScript.format(foutname = foutname))
     # generate smt-lib2
-    subprocess.call([YosysPath, "YosysScript.ys" ])
+    if subprocess.call([YosysPath, "YosysScript.ys" ]) != 0:
+        print 'Yosys failed. Quit.' 
+        exit(1)
     # call verifer
-    subprocess.call([YosysSMTPath, "--dump-vcd","trace.vcd","-s","z3" , '-t', str(no_step if arbInit else 40) , "{foutname}.smt2".format(foutname = foutname) ])
+    if subprocess.call([YosysSMTPath, "--dump-vcd","trace.vcd","-s","z3" , '-t', str(no_step if arbInit else 40) , "{foutname}.smt2".format(foutname = foutname) ]) != 0:
+        print 'Z3 solver failed. Quit'
+        exit(1)
 
 def StepCount(rfmap):
     bnd = max([int(inst["ready bound"]) for inst in rfmap["instructions"] ])
     return (bnd if bnd > 0 else 1)
 
 
-def Verify(rfJsonIn, vMapJsonIn, vlgOut):
+def Verify(rfJsonIn, vMapJsonIn, vlgOut, finlist):
     # Extract info from JSON
     rfmap = json.loads(open(rfJsonIn).read())
     vmap  = json.loads(open(vMapJsonIn).read())
     global no_step
     no_step = StepCount(rfmap)
     InstrumentLoad('ref-rel/instrument-map.json')
-
-    finlist = [ rfmap["target ILA"].split(':')[0] , rfmap["target Verilog"].split(':')[0] ]
+    
+    if not finlist:
+        finlist = [ rfmap["target ILA"].split(':')[0] , rfmap["target Verilog"].split(':')[0] ]
     foutname = vlgOut.split('.')[0]
 
     globalInv = rfmap["global invariants"]
@@ -221,5 +226,19 @@ def Verify(rfJsonIn, vMapJsonIn, vlgOut):
 
 
 if __name__ == '__main__':
-    Verify('ref-rel/ref-rel-verilog.json' ,  'ref-rel/ref-rel-var-map.json' , 'vlg-gen/all.v')
+    parser = argparse.ArgumentParser(description='ILA Equivalence Checking Helper')
+    parser.add_argument('-v', type = str, help = 'Verilog from Implementation')
+    parser.add_argument('-i', type = str, help = 'Verilog from ILA')
+    args = parser.parse_args()
+    finlist = []
+    if args.v: finlist.append(args.v)
+    if args.i: finlist.append(args.i)
+    if args.v and not os.path.exists(args.v):
+        print 'File:',args.v, 'does not exist!' 
+        exit(1)
+    if args.i and not os.path.exists(args.i):
+        print 'File:',args.i, 'does not exist!' 
+        exit(1)
+    
+    Verify('ref-rel/ref-rel-verilog.json' ,  'ref-rel/ref-rel-var-map.json' , 'vlg-gen/all.v', finlist = finlist)
 
