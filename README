@@ -10,7 +10,7 @@ Installation
 4. Install dependent packages and ILAng: in the terminal just opened in the previous step, type
 
     cd ILAng
-    bash INSTALL.sh
+    source INSTALL.sh
    
    This will invoke the installation process. When prompted for password, please type your password (`a` for this VM) and press <Enter> to grant root permission. 
  
@@ -63,8 +63,8 @@ reported in the paper
             cd Verilog
             make
         
-       This will build a simulator from the verilog design in the `Verilog` directory,
-       which is an executable named `AESsim`. 
+       This will build a simulator from the verilog design provided in the `Verilog` directory,
+       the simulator is an executable named `AESsim`. 
         
        Then start ILA synthesis using the following commands:
         
