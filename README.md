@@ -163,7 +163,8 @@ reported in the paper
       and (b) verifying the equivalence of instructions assuming the invariants
       given are valid. A more detailed explanantion of what the inductive
       invariants specify can be found in `$ILAROOT/examples/toy_alu/README.md`.
-      If the verification failed, a waveform will be generated.
+      If the verification failed, a waveform named `trace.vcd` showing the failing
+      trace will be generated.
       
       
               
