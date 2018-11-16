@@ -3,9 +3,9 @@ Installation
 
 1. Please first download the zip archive `ILAng.zip` from the link we provided. (You should have completed this step)
 
-2. Unzip the archive. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip ILAng.zip` with an optionaly `[-d <destination_path>]` argument to specify the destination. We suggest you create a new folder for this purpose, and unzip to its path.
+2. Unzip the archive. You can either (a) double click the archive in the file explorer (namely nautilus) and click "Extract" on the top left corner of the window to unzip or (b) using command line `unzip master.zip`. The unzipping process will automatically create a folder named `TACAS-artifact-master`, within which there are the directory of the artifact: `ILAng`, the license and this readme.
 
-3. Open a terminal and change directory to the folder that contains the unzipped files. You can do this by first using the file explorer to navigate to the folder and right clicking in the blank space of the file explorer and select "Open in Terminal".
+3. Open a terminal and change directory to the `TACAS-artifact-master` folder. You can do this by first using the file explorer to navigate to the folder and right clicking in the blank space of the file explorer and select "Open in Terminal".
 
 4. Install dependent packages and ILAng: in the terminal just opened in the previous step, run 
 
