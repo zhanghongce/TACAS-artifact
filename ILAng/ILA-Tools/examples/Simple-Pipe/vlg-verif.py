@@ -4,6 +4,7 @@ import argparse
 import subprocess
 import json
 
+checkingState = ''
 no_step = 20
 
 YosysPath = os.getenv("HOME") + "/yosys/yosys"
@@ -37,8 +38,8 @@ wire commit = _3;
 
 assign dummy_rf_data = impl_rf & spec_rf0 & spec_rf1 & spec_rf2 & spec_rf3 ;
 
-simpleALU    m0(.clk(clk), .rst(rst), .inst(inst), .__ILA_simpleALU_grant__(4'b1111) , .r0(spec_rf0), .r1(spec_rf1), .r2(spec_rf2), .r3(spec_rf3) );
-pipeline_alu m1(.clk(clk), .rst(rst), .inst(inst), .dummy_read_rf(dummy_read_rf), .dummy_rf_data( impl_rf ) , /*port_list_top*/);
+simplePipe    m0(.clk(clk), .rst(rst), .inst(inst), .__ILA_simplePipe_grant__(4'b1111) , .r0(spec_rf0), .r1(spec_rf1), .r2(spec_rf2), .r3(spec_rf3) );
+pipeline_v m1(.clk(clk), .rst(rst), .inst(inst), .dummy_read_rf(dummy_read_rf), .dummy_rf_data( impl_rf ) , /*port_list_top*/);
 
 
 always @(posedge clk) begin
@@ -155,11 +156,11 @@ def RunVlgChecker(foutname, arbInit = False):
         fout.write(YosysScript.format(foutname = foutname))
     # generate smt-lib2
     if subprocess.call([YosysPath, "YosysScript.ys" ]) != 0:
-        print 'Yosys failed. Quit.' 
+        print 'Yosys failed when checking:', checkingState , '. Quit.' 
         exit(1)
     # call verifer
     if subprocess.call([YosysSMTPath, "--dump-vcd","trace.vcd","-s","z3" , '-t', str(no_step if arbInit else 40) , "{foutname}.smt2".format(foutname = foutname) ]) != 0:
-        print 'Z3 solver failed. Quit'
+        print 'Z3 solver failed when checking:', checkingState ,'. Quit'
         exit(1)
 
 def StepCount(rfmap):
@@ -168,11 +169,10 @@ def StepCount(rfmap):
 
 
 def Verify(rfJsonIn, vMapJsonIn, vlgOut, finlist):
+    global checkingState
     # Extract info from JSON
     rfmap = json.loads(open(rfJsonIn).read())
     vmap  = json.loads(open(vMapJsonIn).read())
-    global no_step
-    no_step = StepCount(rfmap)
     InstrumentLoad('ref-rel/instrument-map.json')
     
     if not finlist:
@@ -194,34 +194,47 @@ def Verify(rfJsonIn, vMapJsonIn, vlgOut, finlist):
         idx += 1
     AndOfAssrtWires = ' && ' . join ( ['_p%d_' % i for i in range(idx)] )
     GenVerifWrapper(assumpts, asserts, finlist, foutname = foutname, newWires = newWires,  AndOfAssrtWires = AndOfAssrtWires)
+    
+    checkingState = 'Invariants'
     RunVlgChecker(foutname)
 
     #now let's check the instructions
     # dummy_reset
+    
+    global no_step
+    for instInfo in rfmap["instructions"]:
+        print 'Checking instruction:',instInfo['instruction']
+        no_step = instInfo['ready bound']
+        assumpts = []
+        asserts = []
+        newWires = ''
+        idx = 0
+        for inv in globalInv:
+            result_inv = InstrAssumptAssume(inv) # change the name to the newly added wire
+            assumpts.append("assume property ( %s ) ; " % result_inv)
+            idx += 1
 
-    assumpts = []
-    asserts = []
-    newWires = ''
-    idx = 0
-    for inv in globalInv:
-        result_inv = InstrAssumptAssume(inv) # change the name to the newly added wire
-        assumpts.append("assume property ( %s ) ; " % result_inv)
-        idx += 1
+        for sm in stateMap:
+            result_sm = InstrAssumptAssume(sm)
+            assumpts.append("assume property ( ( ~start ) || (%s) );" % result_sm)
+        
+        for cond in instInfo["start decode"]:
+            assumpts.append("assume property ( %s );" % cond );
+               
 
-    for sm in stateMap:
-        result_sm = InstrAssumptAssume(sm)
-        assumpts.append("assume property ( ( ~start ) || (%s) );" % result_sm)
-    assumpts.append("assume property ( dummy_reset == 0 );" )
-
-    idx = 0
-    for sm in stateMap:
-        result_sm = InstrAssumptAssume(sm)
-        asserts.append("assert property ( ( ~ _1 ) || (%s) ) ; " % result_sm )
-        newWires += ("wire _p{idx}_; \n assign _p{idx}_ = {ctx} ; \n ".format(idx = idx, ctx = result_sm))
-        idx += 1
-    AndOfAssrtWires = ' && ' . join ( ['_p%d_' % i for i in range(idx)] )
-    GenVerifWrapper(assumpts, asserts, finlist, foutname = foutname, newWires = newWires,  AndOfAssrtWires = AndOfAssrtWires, arbInit = True)
-    RunVlgChecker(foutname, arbInit = True)
+        idx = 0
+        for sm in stateMap:
+            result_sm = InstrAssumptAssume(sm)
+            asserts.append("assert property ( ( ~ _1 ) || (%s) ) ; " % result_sm )
+            newWires += ("wire _p{idx}_; \n assign _p{idx}_ = {ctx} ; \n ".format(idx = idx, ctx = result_sm))
+            idx += 1
+        AndOfAssrtWires = ' && ' . join ( ['_p%d_' % i for i in range(idx)] )
+        GenVerifWrapper(assumpts, asserts, finlist, foutname = foutname, newWires = newWires,  AndOfAssrtWires = AndOfAssrtWires, arbInit = True)
+        
+        checkingState = instInfo['instruction']
+        RunVlgChecker(foutname, arbInit = True)
+        print 'Finish checking instruction:',instInfo['instruction']
+    print 'Done.'
 
 
 

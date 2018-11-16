@@ -17,7 +17,7 @@
 `define  OP_SUB 2'b10
 `define  OP_AND 2'b11
 
-module pipeline_alu(input clk, input rst, input [7:0] inst, input [1:0] dummy_read_rf, output [7:0] dummy_rf_data , /*port_list_out*/);
+module pipeline_v(input clk, input rst, input [7:0] inst, input [1:0] dummy_read_rf, output [7:0] dummy_rf_data , /*port_list_out*/);
 
 wire [1:0] op; 
 wire [1:0] rs1;
@@ -159,8 +159,8 @@ assign id_rs1_val = rs1_stage_info == 2'b00 ? rs1_val :
                     rs1_stage_info == 2'b01 ? ex_wb_val :
                     ex_alu_result ; // 10/11
 
-assign id_rs2_val = rs2_stage_info == 2'b00 ? rs2_val :
-                    rs2_stage_info == 2'b01 ? ex_wb_val :
+assign id_rs2_val = rs1_stage_info == 2'b00 ? rs1_val :
+                    rs1_stage_info == 2'b01 ? ex_wb_val :
                     ex_alu_result ; // 10/11
 
 always @(posedge clk) begin

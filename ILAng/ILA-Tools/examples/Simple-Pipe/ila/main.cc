@@ -14,12 +14,12 @@ using namespace ila;
 
 Ila BuildModel() {
     // build the ila
-    auto alu_ila = Ila("simpleALU");
-    auto inst = alu_ila.NewBvInput("inst", 8);
-    auto r0 = alu_ila.NewBvState("r0", 8);
-    auto r1 = alu_ila.NewBvState("r1", 8);
-    auto r2 = alu_ila.NewBvState("r2", 8);
-    auto r3 = alu_ila.NewBvState("r3", 8);
+    auto pipe_ila = Ila("simplePipe");
+    auto inst = pipe_ila.NewBvInput("inst", 8);
+    auto r0 = pipe_ila.NewBvState("r0", 8);
+    auto r1 = pipe_ila.NewBvState("r1", 8);
+    auto r2 = pipe_ila.NewBvState("r2", 8);
+    auto r3 = pipe_ila.NewBvState("r3", 8);
 
     auto op  = inst(7,6);
     auto rs1 = inst(5,4);
@@ -38,37 +38,37 @@ Ila BuildModel() {
                                    r3
                         )));
 
-    auto NOP = alu_ila.NewInstr("NOP");
+    auto NOP = pipe_ila.NewInstr("NOP");
     {
         NOP.SetDecode(op == BvConst(0,2) );
     }
 
-    auto ADD = alu_ila.NewInstr("ADD");
+    auto ADD = pipe_ila.NewInstr("ADD");
     {
         ADD.SetDecode(op == BvConst(1,2) );
         auto res = rs1_val + rs2_val;
         SET_UPDATE(ADD, rd, res);
     }
 
-    auto SUB = alu_ila.NewInstr("SUB");
+    auto SUB = pipe_ila.NewInstr("SUB");
     {
         SUB.SetDecode(op == BvConst(2,2) );
         auto res = rs1_val - rs2_val;
         SET_UPDATE(SUB, rd, res);
     }
 
-    auto AND = alu_ila.NewInstr("AND");
+    auto AND = pipe_ila.NewInstr("AND");
     {
         AND.SetDecode(op == BvConst(3,2) );
         auto res = rs1_val & rs2_val;
         SET_UPDATE(AND, rd, res);
     }
 
-    return alu_ila;
+    return pipe_ila;
 }
 
 void GenerateVerilogModel(const Ila & a) {
-	ofstream fout("vlg-gen/alu.v");
+	ofstream fout("vlg-gen/pipe.v");
     a.ExportToVerilog(fout);
 }
 

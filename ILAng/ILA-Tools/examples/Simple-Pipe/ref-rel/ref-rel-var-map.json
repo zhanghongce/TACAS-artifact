@@ -1,5 +1,5 @@
 {
-  "model m0": "aluIla.json",
+  "model m0": "pipeIla.json",
   "model m1": "ref-rel-verilog.json",
   "instruction mapping": [],
   "state mapping": [

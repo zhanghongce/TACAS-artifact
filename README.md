@@ -101,7 +101,7 @@ reported in the paper
        
 
 
-Section 3.2  Arithmetic Logic Unit (ALU)
+Section 3.2  A Simple Execution Pipelines
 ------------------------------------------------------
 
 #### Overview ####
@@ -109,7 +109,7 @@ Section 3.2  Arithmetic Logic Unit (ALU)
 The artifect is to showcase
    
    1. Manually defined ILA and ILA programming interface (Section 2.2)
-   2. Verification capability -- ILA vs. FSM verification utilities (Section 2.3)
+   2. Verification capability -- Verfication Targets Generation (Section 2.4), ILA vs. FSM equivalence checking (Section 2.3)
   
 By following the instructions, you will be able to reproduce the following results
 reported in the paper
@@ -122,22 +122,30 @@ reported in the paper
 
    1. After sucessfully installing ILAng, open a new terminal. Run  
       ```
-      cd $ILAROOT/examples/toy_alu
+      cd $ILAROOT/examples/Simple-Pipe
       ```
         
-      This will land you in the directory of the ALU case study.
+      This will land you in the directory of the simple pipeline case study.
       In this directory, there is a README.md that gives an overview of this case
       study. 
        
       NOTE:
-         * This example, though small, is more than just a module 
-           that performs arithmetic and logic operations. It is intended
-           to mimic the execution unit of an in-order pipeline of a processor.
-           This (dummy) execution unit contains 3 stages and there are also 
-           forwarding network implemented as shown below. To aid forwarding, 
-           there is also a tiny scoreboard implemented. (See 
-           `$ILAROOT/examples/toy_alu/README.md` for details)
-       
+         * This example is intended to mimic the execution unit in the 
+           back-end of an in-order processor pipeline. It contains 3 
+           pipeline stages and there are also forwarding network 
+           implemented as shown below. To aid forwarding, there is also 
+           a tiny scoreboard implemented. (See 
+           `$ILAROOT/examples/Simple-Pipe/README.md` for details)
+
+      To learn about the size of the ILA constructing code, run
+      ```
+      wc -l ila/main.cc
+      ```
+      Similiarly, you can run
+      ```
+      wc -l verilog/simple_pipe.v
+      ```
+      to count lines of code of the Verilog design. 
 
    2. Construct the ILA and generate Verilog model from ILA. Run
       ```
@@ -146,13 +154,23 @@ reported in the paper
       ```
       
       This will compile the C++ code under `ila` directory. This piece
-      of C++ code construct ILA-IR by calling its C++ API and use the
-      ILAng functionality to generate a Verilog module (under `vlg-gen`) 
+      of C++ code constructs ILA-IR by calling its C++ API and use the
+      ILAng functionality to generate a Verilog module (`vlg-gen/pipe.v`) 
       for equivalence checking.
+
+      The ILA constructed by C++ code does not contain the 
+      information of microarchitectural details (e.g., # of pipeline stages,
+      scoreboard or forwarding network), because these are micro-architectural.
+      The ILA constructed here, is a specification that only requires
+      the correct execution of instructions according to the state update
+      functions definitions. So is the Verilog code (`vlg-gen/pipe.v`),
+      which also contains no pipelines. The behavior equivalence checking
+      is to check functional equivalence while allowing flexibility in 
+      specific implementations.
       
       To reproduce the result of equivalence checking, run
       ```
-      time python vlg-verif.py -v verilog/simple_alu.v -i vlg-gen/alu.v
+      time python vlg-verif.py -v verilog/simple_pipe.v -i vlg-gen/pipe.v
       ```
       
       The equivalence checking will first parse in the refinement relations,
@@ -160,21 +178,21 @@ reported in the paper
       will first generate a verification wrapper (`vlg-gen/all.v`), and calls
       yosys to parse the wrapper and produce a SMT-LIB2 file for SMT queries.
       The verification tasks contains (a) verifying the given inductive invariants,
-      and (b) verifying the equivalence of instructions assuming the invariants
+      and (b) verifying the equivalence of each instruction assuming the invariants
       given are valid. A more detailed explanantion of what the inductive
-      invariants specify can be found in `$ILAROOT/examples/toy_alu/README.md`.
+      invariants specify can be found in `$ILAROOT/examples/Simple-Pipe/README.md`.
       If the verification failed, a waveform named `trace.vcd` showing the failing
       trace will be generated.
       
-      We also provide an incorrectly implemented design `verilog/simple_alu_wrong.v`,
-      where the only difference from `verilog/simple_alu.v` is at Line 162-163,
+      We also provide an incorrectly implemented design `verilog/simple_pipe_wrong.v`,
+      where the only difference from `verilog/simple_pipe.v` is around Line 162-163,
       about the bypassing network. In this wrong design, the designer wanted to 
       save some typing by copying the code of bypassing `rs1` and use it for bypassing
       `rs2`, but carelessly forgot to change the name of a signal from `1` to `2`, to 
-      make it work for rs2. You can also check for the equvialence between this Verilog
+      adapt it for rs2. You can check for the equvialence also between this Verilog
       implementation and the ILA specification using the following command:
       ```
-      time python vlg-verif.py -v verilog/simple_alu_wrong.v -i vlg-gen/alu.v      
+      time python vlg-verif.py -v verilog/simple_pipe_wrong.v -i vlg-gen/pipe.v      
       ```
 
       The checking should fail and the trace that manifests this problem is generated and
