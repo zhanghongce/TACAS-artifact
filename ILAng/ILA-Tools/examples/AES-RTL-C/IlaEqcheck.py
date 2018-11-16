@@ -36,26 +36,38 @@ def loadILAs(vname,cname):
 def Checking(vname,cname):
     (vILA,vuILA,cILA,cuILA) = loadILAs(vname, cname)
     eq = EqCheckLib.EQCheck(vILA,vuILA,cILA,cuILA)
+    
+    try:
+        cmd_Vlg           = vuILA.getinp('cmd')
+        cmdaddr_Vlg       = vuILA.getinp('cmdaddr')
+        cmddata_Vlg       = vuILA.getinp('cmddata')
+        aes_state_Vlg     = vuILA.getreg('aes_state')
+        byte_cnt_Vlg      = vuILA.getreg('byte_cnt') 
+        blk_cnt_Vlg       = vuILA.getreg('blk_cnt') 
+        oped_byte_cnt_Vlg = vuILA.getreg('oped_byte_cnt')
+        uaes_ctr_Vlg      = vuILA.getreg('uaes_ctr')
+        aes_len_Vlg       = vuILA.getreg('aes_len')
+        
 
-    cmd_Vlg           = vuILA.getinp('cmd')
-    cmdaddr_Vlg       = vuILA.getinp('cmdaddr')
-    cmddata_Vlg       = vuILA.getinp('cmddata')
-    aes_state_Vlg     = vuILA.getreg('aes_state')
-    byte_cnt_Vlg      = vuILA.getreg('byte_cnt') 
-    blk_cnt_Vlg       = vuILA.getreg('blk_cnt') 
-    oped_byte_cnt_Vlg = vuILA.getreg('oped_byte_cnt')
-    uaes_ctr_Vlg      = vuILA.getreg('uaes_ctr')
-    aes_len_Vlg       = vuILA.getreg('aes_len') 
-
-
-    cmd_C             = cuILA.getinp('cmd')
-    cmdaddr_C         = cuILA.getinp('cmdaddr')
-    cmddata_C         = cuILA.getinp('cmddata')
-    aes_state_C       = cuILA.getreg('aes_state')
-    aes_ctr_C         = cuILA.getreg('aes_ctr')
-    uaes_ctr_C        = cuILA.getreg('uaes_ctr')
-    blk_cnt_C         = cuILA.getreg('blk_cnt') 
-    aes_len_C         = cuILA.getreg('aes_len') 
+        cmd_C             = cuILA.getinp('cmd')
+        cmdaddr_C         = cuILA.getinp('cmdaddr')
+        cmddata_C         = cuILA.getinp('cmddata')
+        aes_state_C       = cuILA.getreg('aes_state')
+        aes_ctr_C         = cuILA.getreg('aes_ctr')
+        uaes_ctr_C        = cuILA.getreg('uaes_ctr')
+        blk_cnt_C         = cuILA.getreg('blk_cnt') 
+        aes_len_C         = cuILA.getreg('aes_len')
+    except IndexError:
+        print 'Error: ILA does not match refinement relations'
+        exit(1)
+        
+    
+    try:
+        cuILA.getreg('oped_byte_cnt')
+        print 'Error: ILA does not match refinement relations'
+        exit(1)
+    except IndexError:
+        pass
 
     inductiveInvariant_Vlg = [  vuILA.fetch_valid , 
                                 ( aes_state_Vlg == 1 ) & ( byte_cnt_Vlg == 0) , 
@@ -99,7 +111,7 @@ def Checking(vname,cname):
     if r:
         print 'Equivalence between "' + vILA.name + '" and "' + cILA.name + '" holds.' 
     else:
-        print  ILA.name, 'and' , cILA.name, 'are not equivalent.' 
+        print  vILA.name, 'and' , cILA.name, 'are not equivalent.' 
 
 
 if __name__ == '__main__':
