@@ -101,7 +101,7 @@ reported in the paper
        
 
 
-Section 3.2  A Simple Execution Pipelines
+Section 3.2  A Simple Execution Pipeline
 ------------------------------------------------------
 
 #### Overview ####
