@@ -74,7 +74,7 @@ reported in the paper
       
       ```
       cd $ILAROOT/examples/AES-RTL-C
-      time ./syn_Vlg.py
+      time python syn_Vlg.py
       ```
         
       The synthesis algorithm will query the simulator and use the outcome to figure
@@ -83,7 +83,7 @@ reported in the paper
         
    3. Next, let's synthesize ILA from a C implementation (under folder `$ILAROOT/examples/AES-RTL-C/C`). Run
       ```  
-      time ./syn_C.py
+      time python syn_C.py
       ```
             
       To start synthesis. The synthesis process will automatically instrument the C
@@ -92,7 +92,7 @@ reported in the paper
     
    4. Behavioral equivalence checking. With the ILA-IR for both AES_V and AES_C generated, run
       ```
-      time ./IlaEqcheck.py
+      time python IlaEqcheck.py -v vILA -c cILA
       ```
             
       This script will use the ILA equivalence checking utilities to check for behavioral equivalence.
@@ -152,10 +152,10 @@ reported in the paper
       
       To reproduce the result of equivalence checking, run
       ```
-      time python vlg-verif.py
+      time python vlg-verif.py -v verilog/simple_alu.v -i vlg-gen/alu.v
       ```
       
-      The equivalence checking will first parse-in the refinement relations,
+      The equivalence checking will first parse in the refinement relations,
       and decides the verification tasks. For each verification task, it
       will first generate a verification wrapper (`vlg-gen/all.v`), and calls
       yosys to parse the wrapper and produce a SMT-LIB2 file for SMT queries.
@@ -165,6 +165,23 @@ reported in the paper
       invariants specify can be found in `$ILAROOT/examples/toy_alu/README.md`.
       If the verification failed, a waveform named `trace.vcd` showing the failing
       trace will be generated.
+      
+      We also provide an incorrectly implemented design `verilog/simple_alu_wrong.v`,
+      where the only difference from `verilog/simple_alu.v` is at Line 162-163,
+      about the bypassing network. In this wrong design, the designer wanted to 
+      save some typing by copying the code of bypassing `rs1` and use it for bypassing
+      `rs2`, but carelessly forgot to change the name of a signal from `1` to `2`, to 
+      make it work for rs2. You can also check for the equvialence between this Verilog
+      implementation and the ILA specification using the following command:
+      ```
+      time python vlg-verif.py -v verilog/simple_alu_wrong.v -i vlg-gen/alu.v      
+      ```
+
+      The checking should fail and the trace that manifests this problem is generated and
+      saved as `trace.vcd` in the same folder, which can be viewed using GtkWave:
+      ```
+      gtkwave trace.vcd &
+      ```
       
       
               
