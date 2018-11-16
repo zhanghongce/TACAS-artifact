@@ -14,7 +14,7 @@ Installation
     source INSTALL.sh
     ```
    
-   This will invoke the installation process. When prompted for password, please type your password (a single letter "a" for this VM) and press `<Enter>` to grant root permission. 
+   This will start the installation process. When prompted for password, please type your password (a single letter "a" for this VM) and press `<Enter>` to grant root permission. 
  
  
    
