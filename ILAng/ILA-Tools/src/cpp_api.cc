@@ -439,6 +439,10 @@ void InstrRef::SetDecode(const ExprRef& decode) {
   ptr_->set_decode(decode.get());
 }
 
+ExprRef InstrRef::GetDecode() {
+  return ptr_->decode();
+}
+
 void InstrRef::SetUpdate(const ExprRef& state, const ExprRef& update) {
   ptr_->set_update(state.get(), update.get());
 }
@@ -522,6 +526,8 @@ size_t Ila::instr_num() const { return ptr_->instr_num(); }
 size_t Ila::child_num() const { return ptr_->child_num(); }
 
 size_t Ila::init_num() const { return ptr_->init_num(); }
+
+std::string Ila::name() const { return ptr_->name().str(); }
 
 ExprRef Ila::fetch() const { return ExprRef(ptr_->fetch()); }
 

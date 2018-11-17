@@ -201,7 +201,48 @@ reported in the paper
       gtkwave trace.vcd &
       ```
       
-      
+
+ILAng BMC Engine Demo
+----------------------------
+
+#### Overview ####
+
+The artifect in this section is to showcase
+   
+   1. Verification capability -- Unrolling and Bounded Model Checking
+
+It constructs the ILA models for two FIFOs. One with a counter that counts
+the number of elements currently in the fifo and does not enqueue new element
+when full or dequeue when empty. The other design has no such protection. 
+
+The BMC here is to check if the non-overflow/underflow property holds on the 
+two design.
+  
+#### Instructions ####
+
+  1. Change directory to the folder that contains the design. In a terminal, type
+     ```
+     cd $ILAROOT/examples/FIFO-BMC
+     ```
+     There is `README.md` in the directory that further discuss the designs and properties to be checked.
+
+  2. Compile the code, run
+     ```
+     make
+     ```
+     This will create an executable named `fifo-bmc`
+
+  3. Run BMC to check the property. Run 
+     ```
+     ./fifo-bmc N
+     ```
+     where `N` should be a positive integer, for example.
+     ```
+     ./fifo-bmc 20
+     ```
+     You will find that, if you set `N` to be smaller than or equal to the configured FIFO depth (which is 16 by default), the checking will not find that the `FIFO without protection` can overflow. 
+     This is understandable, because to trigger the overflow, there has to be at least #Depth+1 (ie. 17) Enqueue operations whereas underflow can be triggered just be a Dequeue operation in the first step, when the FIFO is initiallly empty.
+
               
 
 ILA and ILAng Documentation

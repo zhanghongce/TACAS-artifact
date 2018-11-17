@@ -379,6 +379,10 @@ public:
   /// \brief Set the child-program of the instruction.
   /// \param[in] prog the child-ILA representing the child-program.
   void SetProgram(const Ila& prog);
+
+  /// \brief Get the decode function of the instruction.
+  /// \param[out] the decode function wrapped in Expression reference.
+  ExprRef GetDecode();
   
   
   // ------------------------- GENERATORS --------------------------------- //
@@ -473,6 +477,8 @@ public:
   /// Return the number of initial condition.
   size_t init_num() const;
 
+  /// Return the Ila name.
+  std::string name() const;
   /// Return the fetch function.
   ExprRef fetch() const;
   /// Return the valid function.
