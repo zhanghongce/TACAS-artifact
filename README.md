@@ -132,10 +132,9 @@ reported in the paper
       NOTE:
          * This pipeline case is a simple version of the
            back-end of an in-order processor pipeline. It contains 3 
-           pipeline stages and there are also forwarding network 
-           implemented as shown below. To aid forwarding, there is also 
-           a tiny scoreboard implemented. (See 
-           `$ILAROOT/examples/Simple-Pipe/README.md` for details)
+           pipeline stages and there is also a forwarding network. 
+           To aid forwarding, there is also a tiny scoreboard implemented. 
+           (See `$ILAROOT/examples/Simple-Pipe/README.md` for details)
 
       To learn about the size of the ILA constructing code, run
       ```
