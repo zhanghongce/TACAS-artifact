@@ -185,8 +185,8 @@ reported in the paper
       
       We also provide an incorrectly implemented design `verilog/simple_pipe_wrong.v`,
       where the only difference from `verilog/simple_pipe.v` is around Line 162-163,
-      about the bypassing network. In this wrong design, the designer wanted to 
-      save some typing by copying the code of bypassing `rs1` and use it for bypassing
+      about the forwarding network. In this wrong design, the designer wanted to 
+      save some typing by copying the code of forwarding `rs1` and use it for 
       `rs2`, but carelessly forgot to change the name of a signal from `1` to `2`, to 
       adapt it for rs2. You can check for the equvialence also between this Verilog
       implementation and the ILA specification using the following command:
