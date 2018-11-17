@@ -16,8 +16,9 @@ within a given bound.
 File Content
 ------------
 
-	* src/main.cc : the C++ code that constructs two FIFO ILAs and uses the verification utilities to check underflow or overflow properties
-
+	* src/main.cc    : the C++ code that provides the commandline interface
+	* src/ila_fifo.h : definitions of ILAs of two FIFOs
+	* src/util.h 	 : the utility function to use unroller for BMC
 
 
 The Design

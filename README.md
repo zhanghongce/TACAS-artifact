@@ -130,7 +130,7 @@ reported in the paper
       study. 
        
       NOTE:
-         * This example is intended to mimic the execution unit in the 
+         * This pipeline case is a simple version of the
            back-end of an in-order processor pipeline. It contains 3 
            pipeline stages and there are also forwarding network 
            implemented as shown below. To aid forwarding, there is also 
@@ -209,14 +209,14 @@ ILAng BMC Engine Demo
 
 The artifect in this section is to showcase
    
-   1. Verification capability -- Unrolling and Bounded Model Checking
+   1. Verification capability -- Unrolling and Bounded Model Checking (Section 2.3)
 
-It constructs the ILA models for two FIFOs. One with a counter that counts
-the number of elements currently in the fifo and does not enqueue new element
-when full or dequeue when empty. The other design has no such protection. 
+It constructs the ILA models for two FIFOs. One has a counter that counts
+the number of elements currently in the fifo and does not enqueue any new element
+when full, neither dequeue when empty. The other design has no such protection. 
 
 The BMC here is to check if the non-overflow/underflow property holds on the 
-two design.
+two designs respectively.
   
 #### Instructions ####
 
@@ -224,7 +224,7 @@ two design.
      ```
      cd $ILAROOT/examples/FIFO-BMC
      ```
-     There is `README.md` in the directory that further discuss the designs and properties to be checked.
+     There is `README.md` in the directory that further discusses the designs and properties to be checked.
 
   2. Compile the code, run
      ```
@@ -236,12 +236,11 @@ two design.
      ```
      ./fifo-bmc N
      ```
-     where `N` should be a positive integer, for example.
+     where `N` is the bound, and it should be a positive integer, for example.
      ```
      ./fifo-bmc 20
      ```
-     You will find that, if you set `N` to be smaller than or equal to the configured FIFO depth (which is 16 by default), the checking will not find that the `FIFO without protection` can overflow. 
-     This is understandable, because to trigger the overflow, there has to be at least #Depth+1 (ie. 17) Enqueue operations whereas underflow can be triggered just be a Dequeue operation in the first step, when the FIFO is initiallly empty.
+     You will find that, if you set `N` to be smaller than or equal to the configured FIFO depth (which is 16 by default), BMC will not find that the `FIFO without protection` can overflow, though it can always find it can underflow. This is understandable, because to trigger the overflow, there has to be at least #Depth+1 (ie. 17) Enqueue operations whereas underflow can be triggered just be a Dequeue operation in the first step, when the FIFO is initiallly empty.
 
               
 
